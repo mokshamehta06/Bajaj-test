@@ -1,10 +1,13 @@
 import { motion } from 'framer-motion';
 
 export default function AnalyticsView({ stats }) {
-  if (!stats) return <div style={{ padding: '2rem' }}>Loading analytics...</div>;
+  if (!stats || typeof stats.total === 'undefined') return <div style={{ padding: '2rem' }}>Loading analytics...</div>;
 
-  const resolvedPercent = stats.total > 0 ? Math.round((stats.resolved / stats.total) * 100) : 0;
-  const breachedPercent = stats.total > 0 ? Math.round((stats.breached / stats.total) * 100) : 0;
+  const resolvedCount = stats.byStatus?.resolved || 0;
+  const breachedCount = stats.breachedOpen || 0;
+
+  const resolvedPercent = stats.total > 0 ? Math.round((resolvedCount / stats.total) * 100) : 0;
+  const breachedPercent = stats.total > 0 ? Math.round((breachedCount / stats.total) * 100) : 0;
 
   return (
     <motion.div
@@ -53,15 +56,15 @@ export default function AnalyticsView({ stats }) {
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem 0', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
           <span style={{ color: 'var(--color-open)' }}>Open</span>
-          <span style={{ fontWeight: 600 }}>{stats.open}</span>
+          <span style={{ fontWeight: 600 }}>{stats.byStatus?.open || 0}</span>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem 0', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
           <span style={{ color: 'var(--color-in-progress)' }}>In Progress</span>
-          <span style={{ fontWeight: 600 }}>{stats.in_progress}</span>
+          <span style={{ fontWeight: 600 }}>{stats.byStatus?.in_progress || 0}</span>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem 0' }}>
           <span style={{ color: 'var(--color-resolved)' }}>Resolved</span>
-          <span style={{ fontWeight: 600 }}>{stats.resolved}</span>
+          <span style={{ fontWeight: 600 }}>{resolvedCount}</span>
         </div>
       </div>
     </motion.div>
