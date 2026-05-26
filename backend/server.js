@@ -25,12 +25,17 @@ app.get('/', (req, res) => {
 
 // Routes
 app.use('/tickets', ticketRoutes);
+app.use('/bfhl', require('./routes/bfhl'));
 
 // Global error handler
 app.use(errorHandler);
 
-// Start server
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`DeskFlow API server running on port ${PORT}`);
-});
+// Start server only if not running on Vercel
+if (process.env.NODE_ENV !== 'production' || process.env.RENDER) {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => {
+    console.log(`DeskFlow API server running on port ${PORT}`);
+  });
+}
+
+module.exports = app;

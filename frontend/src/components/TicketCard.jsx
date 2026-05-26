@@ -1,4 +1,5 @@
 import { formatAge, getSLATarget } from '../utils/formatAge';
+import { motion } from 'framer-motion';
 
 // Allowed transitions map — mirrors backend
 const ALLOWED_TRANSITIONS = {
@@ -31,15 +32,26 @@ export default function TicketCard({ ticket, onStatusChange, onDelete }) {
       currentStatus: ticket.status
     }));
     e.dataTransfer.effectAllowed = 'move';
-    e.currentTarget.classList.add('dragging');
+    // Allow dragging styling to kick in smoothly
+    setTimeout(() => {
+      if (e.target && e.target.classList) {
+        e.target.classList.add('dragging');
+      }
+    }, 0);
   };
 
   const handleDragEnd = (e) => {
-    e.currentTarget.classList.remove('dragging');
+    e.target.classList.remove('dragging');
   };
 
   return (
-    <div
+    <motion.div
+      layout
+      initial={{ opacity: 0, scale: 0.95, y: 10 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
+      whileHover={{ y: -2 }}
+      transition={{ type: "spring", stiffness: 400, damping: 30 }}
       className={`ticket-card ${ticket.slaBreached ? 'sla-breached' : ''}`}
       draggable
       onDragStart={handleDragStart}
@@ -65,7 +77,7 @@ export default function TicketCard({ ticket, onStatusChange, onDelete }) {
           {ticket.priority}
         </span>
         <span className="ticket-age" title={`SLA target: ${getSLATarget(ticket.priority)}`}>
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="clock-icon">
+          <svg width="12" height="12" viewBox="0 0 14 14" fill="none" className="clock-icon">
             <circle cx="7" cy="7" r="6" stroke="currentColor" strokeWidth="1.2"/>
             <path d="M7 3.5V7l2.5 1.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
           </svg>
@@ -112,6 +124,6 @@ export default function TicketCard({ ticket, onStatusChange, onDelete }) {
           </button>
         ))}
       </div>
-    </div>
+    </motion.div>
   );
 }

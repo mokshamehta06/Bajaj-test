@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Board from './components/Board';
 import StatsStrip from './components/StatsStrip';
 import FilterBar from './components/FilterBar';
@@ -96,33 +97,34 @@ function App() {
       <header className="app-header">
         <div className="header-content">
           <div className="logo">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-              <rect width="32" height="32" rx="8" fill="url(#logo-gradient)"/>
-              <path d="M8 12h16M8 16h12M8 20h8" stroke="white" strokeWidth="2" strokeLinecap="round"/>
-              <defs>
-                <linearGradient id="logo-gradient" x1="0" y1="0" x2="32" y2="32">
-                  <stop stopColor="#6366f1"/>
-                  <stop offset="1" stopColor="#8b5cf6"/>
-                </linearGradient>
-              </defs>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <rect width="24" height="24" rx="4" fill="currentColor"/>
+              <path d="M6 10h12M6 14h8" stroke="black" strokeWidth="2" strokeLinecap="square"/>
             </svg>
             <h1>DeskFlow</h1>
           </div>
-          <button
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             className="btn-create"
             onClick={() => setIsModalOpen(true)}
             id="create-ticket-btn"
           >
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-              <path d="M9 3v12M3 9h12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2" strokeLinecap="square"/>
             </svg>
             New Ticket
-          </button>
+          </motion.button>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="app-main">
+      <motion.main 
+        className="app-main"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
+      >
         <StatsStrip stats={stats} loading={statsLoading} />
         <FilterBar filters={filters} onFilterChange={setFilters} />
         <Board
@@ -132,14 +134,17 @@ function App() {
           onDropError={handleDropError}
           loading={loading}
         />
-      </main>
+      </motion.main>
 
       {/* Create Ticket Modal */}
-      <CreateTicketModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSubmit={handleCreateTicket}
-      />
+      <AnimatePresence>
+        {isModalOpen && (
+          <CreateTicketModal
+            onClose={() => setIsModalOpen(false)}
+            onSubmit={handleCreateTicket}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Error Toast */}
       <ErrorToast

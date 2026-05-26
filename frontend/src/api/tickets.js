@@ -1,11 +1,6 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-
-const api = axios.create({
-  baseURL: API_URL,
-  headers: { 'Content-Type': 'application/json' }
-});
+const API_URL = 'https://backend-five-smoky-79.vercel.app';
 
 export async function fetchTickets(filters = {}) {
   const params = new URLSearchParams();
@@ -13,28 +8,28 @@ export async function fetchTickets(filters = {}) {
   if (filters.priority) params.append('priority', filters.priority);
   if (filters.breached) params.append('breached', 'true');
 
-  const { data } = await api.get(`/tickets?${params.toString()}`);
+  const { data } = await axios.get(`${API_URL}/tickets?${params.toString()}`);
   return data;
 }
 
 export async function createTicket(ticketData) {
-  const { data } = await api.post('/tickets', ticketData);
+  const { data } = await axios.post(`${API_URL}/tickets`, ticketData);
   return data;
 }
 
 export async function updateTicket(id, updates) {
-  const { data } = await api.patch(`/tickets/${id}`, updates);
+  const { data } = await axios.patch(`${API_URL}/tickets/${id}`, updates);
   return data;
 }
 
 export async function deleteTicket(id) {
-  const { data } = await api.delete(`/tickets/${id}`);
+  const { data } = await axios.delete(`${API_URL}/tickets/${id}`);
   return data;
 }
 
 export async function fetchStats() {
-  const { data } = await api.get('/tickets/stats');
+  const { data } = await axios.get(`${API_URL}/tickets/stats`);
   return data;
 }
 
-export default api;
+export default axios;

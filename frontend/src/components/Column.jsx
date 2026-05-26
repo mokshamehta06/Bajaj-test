@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { AnimatePresence } from 'framer-motion';
 import TicketCard from './TicketCard';
 
 const STATUS_LABELS = {
@@ -97,20 +98,21 @@ export default function Column({ status, tickets, onStatusChange, onDelete, onDr
         <span className="column-count">{tickets.length}</span>
       </div>
       <div className="column-body">
-        {tickets.length === 0 ? (
+        {tickets.length === 0 && (
           <div className="column-empty">
             <span>No tickets</span>
           </div>
-        ) : (
-          tickets.map(ticket => (
+        )}
+        <AnimatePresence>
+          {tickets.map(ticket => (
             <TicketCard
               key={ticket._id}
               ticket={ticket}
               onStatusChange={onStatusChange}
               onDelete={onDelete}
             />
-          ))
-        )}
+          ))}
+        </AnimatePresence>
       </div>
     </div>
   );

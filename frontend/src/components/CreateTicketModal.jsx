@@ -64,13 +64,25 @@ export default function CreateTicketModal({ isOpen, onClose, onSubmit }) {
     }
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+    <motion.div 
+      className="modal-overlay" 
+      onClick={onClose}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+    >
+      <motion.div 
+        className="modal-content" 
+        onClick={(e) => e.stopPropagation()}
+        initial={{ y: 20, opacity: 0, scale: 0.95 }}
+        animate={{ y: 0, opacity: 1, scale: 1 }}
+        exit={{ y: 20, opacity: 0, scale: 0.95 }}
+        transition={{ type: "spring", bounce: 0.3, duration: 0.5 }}
+      >
         <div className="modal-header">
-          <h2>Create New Ticket</h2>
+          <h2>How can we help you today?</h2>
           <button className="modal-close" onClick={onClose} aria-label="Close modal">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
               <path d="M15 5L5 15M5 5l10 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
@@ -82,14 +94,14 @@ export default function CreateTicketModal({ isOpen, onClose, onSubmit }) {
           {errors.api && <div className="form-error-banner">{errors.api}</div>}
 
           <div className="form-group">
-            <label htmlFor="subject">Subject</label>
+            <label htmlFor="subject">Issue Summary</label>
             <input
               id="subject"
               name="subject"
               type="text"
               value={formData.subject}
               onChange={handleChange}
-              placeholder="Brief summary of the issue"
+              placeholder="e.g. I can't access my dashboard"
               className={errors.subject ? 'input-error' : ''}
             />
             {errors.subject && <span className="field-error">{errors.subject}</span>}
@@ -148,7 +160,7 @@ export default function CreateTicketModal({ isOpen, onClose, onSubmit }) {
             </button>
           </div>
         </form>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
