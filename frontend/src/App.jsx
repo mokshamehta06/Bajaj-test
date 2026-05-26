@@ -5,6 +5,8 @@ import StatsStrip from './components/StatsStrip';
 import FilterBar from './components/FilterBar';
 import CreateTicketModal from './components/CreateTicketModal';
 import TicketDetailsModal from './components/TicketDetailsModal';
+import AnalyticsView from './components/AnalyticsView';
+import TeamView from './components/TeamView';
 import ErrorToast from './components/ErrorToast';
 import {
   fetchTickets,
@@ -16,6 +18,7 @@ import {
 import './App.css';
 
 function App() {
+  const [currentView, setCurrentView] = useState('board');
   const [tickets, setTickets] = useState([]);
   const [stats, setStats] = useState(null);
   const [filters, setFilters] = useState({ priority: '', breached: false });
@@ -123,15 +126,15 @@ function App() {
         </div>
 
         <nav className="sidebar-nav">
-          <div className="nav-item active">
+          <div className={`nav-item ${currentView === 'board' ? 'active' : ''}`} onClick={() => setCurrentView('board')}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
             Board
           </div>
-          <div className="nav-item" onClick={() => alert("Analytics module coming soon!")}>
+          <div className={`nav-item ${currentView === 'analytics' ? 'active' : ''}`} onClick={() => setCurrentView('analytics')}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
             Analytics
           </div>
-          <div className="nav-item" onClick={() => alert("Team management coming soon!")}>
+          <div className={`nav-item ${currentView === 'team' ? 'active' : ''}`} onClick={() => setCurrentView('team')}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
             Team
           </div>
@@ -158,28 +161,36 @@ function App() {
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
       >
-        <div className="page-header">
-          <h2>Overview</h2>
-          <p>Manage and triage your support requests efficiently.</p>
-        </div>
+        {currentView === 'board' && (
+          <>
+            <div className="page-header">
+              <h2>Overview</h2>
+              <p>Manage and triage your support requests efficiently.</p>
+            </div>
 
-        <StatsStrip stats={stats} loading={statsLoading} />
+            <StatsStrip stats={stats} loading={statsLoading} />
+            
+            <FilterBar 
+              filters={filters} 
+              onFilterChange={setFilters} 
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+            />
+            
+            <Board
+              tickets={filteredTickets}
+              onStatusChange={handleStatusChange}
+              onDelete={handleDelete}
+              onDropError={handleDropError}
+              onTicketClick={(ticket) => setSelectedTicket(ticket)}
+              loading={loading}
+            />
+          </>
+        )}
+
+        {currentView === 'analytics' && <AnalyticsView stats={stats} />}
         
-        <FilterBar 
-          filters={filters} 
-          onFilterChange={setFilters} 
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-        />
-        
-        <Board
-          tickets={filteredTickets}
-          onStatusChange={handleStatusChange}
-          onDelete={handleDelete}
-          onDropError={handleDropError}
-          onTicketClick={(ticket) => setSelectedTicket(ticket)}
-          loading={loading}
-        />
+        {currentView === 'team' && <TeamView />}
       </motion.main>
 
       {/* Modals & Overlays */}

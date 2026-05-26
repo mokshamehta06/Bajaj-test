@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 
 const PRIORITY_OPTIONS = [
   { value: 'low', label: 'Low' },
