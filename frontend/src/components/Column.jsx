@@ -43,7 +43,7 @@ const ALLOWED_TRANSITIONS = {
   closed:      ['resolved']
 };
 
-export default function Column({ status, tickets, onStatusChange, onDelete, onDropError }) {
+export default function Column({ status, tickets, onStatusChange, onDelete, onDropError, onTicketClick }) {
   const [isDragOver, setIsDragOver] = useState(false);
 
   const handleDragOver = (e) => {
@@ -110,6 +110,7 @@ export default function Column({ status, tickets, onStatusChange, onDelete, onDr
               ticket={ticket}
               onStatusChange={onStatusChange}
               onDelete={onDelete}
+              onTicketClick={onTicketClick}
             />
           ))}
         </AnimatePresence>

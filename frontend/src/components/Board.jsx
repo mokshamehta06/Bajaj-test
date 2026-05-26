@@ -2,7 +2,7 @@ import Column from './Column';
 
 const STATUSES = ['open', 'in_progress', 'resolved', 'closed'];
 
-export default function Board({ tickets, onStatusChange, onDelete, onDropError, loading }) {
+export default function Board({ tickets, onStatusChange, onDelete, onDropError, onTicketClick, loading }) {
   // Group tickets by status
   const grouped = {};
   STATUSES.forEach(s => { grouped[s] = []; });
@@ -42,6 +42,7 @@ export default function Board({ tickets, onStatusChange, onDelete, onDropError, 
           onStatusChange={onStatusChange}
           onDelete={onDelete}
           onDropError={onDropError}
+          onTicketClick={onTicketClick}
         />
       ))}
     </div>

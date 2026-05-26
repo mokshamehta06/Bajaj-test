@@ -19,7 +19,7 @@ const TRANSITION_LABELS = {
 // Which button goes left (backward) and which goes right (forward)
 const STATUS_ORDER = ['open', 'in_progress', 'resolved', 'closed'];
 
-export default function TicketCard({ ticket, onStatusChange, onDelete }) {
+export default function TicketCard({ ticket, onStatusChange, onDelete, onTicketClick }) {
   const allowed = ALLOWED_TRANSITIONS[ticket.status] || [];
   const currentIdx = STATUS_ORDER.indexOf(ticket.status);
 
@@ -56,12 +56,16 @@ export default function TicketCard({ ticket, onStatusChange, onDelete }) {
       draggable
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
+      onClick={() => onTicketClick(ticket)}
     >
       <div className="ticket-header">
         <h4 className="ticket-subject">{ticket.subject}</h4>
         <button
           className="ticket-delete"
-          onClick={() => onDelete(ticket._id)}
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete(ticket._id);
+          }}
           title="Delete ticket"
           aria-label="Delete ticket"
         >
@@ -101,7 +105,10 @@ export default function TicketCard({ ticket, onStatusChange, onDelete }) {
           <button
             key={status}
             className="btn-transition btn-backward"
-            onClick={() => onStatusChange(ticket._id, status)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onStatusChange(ticket._id, status);
+            }}
             title={`Move to ${status.replace('_', ' ')}`}
           >
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
@@ -114,7 +121,10 @@ export default function TicketCard({ ticket, onStatusChange, onDelete }) {
           <button
             key={status}
             className={`btn-transition btn-forward ${status === 'resolved' ? 'btn-resolve' : ''}`}
-            onClick={() => onStatusChange(ticket._id, status)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onStatusChange(ticket._id, status);
+            }}
             title={`Move to ${status.replace('_', ' ')}`}
           >
             {TRANSITION_LABELS[status] || status.replace('_', ' ')}
